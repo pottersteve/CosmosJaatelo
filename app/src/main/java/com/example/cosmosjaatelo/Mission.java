@@ -1,15 +1,16 @@
 package com.example.cosmosjaatelo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Mission {
     //variables
-    CrewMember crewA = new CrewMember;
-    CrewMember crewB = new CrewMember;
+    CrewMember crewA = new CrewMember();
+    CrewMember crewB = new CrewMember();
 
-    Threat threat = new Threat;
+    Threat threat = new Threat();
 
-    List<String> missionLog = new List<String>;
+    List<String> missionLog = new ArrayList<>();
     Boolean active;
     int turnCount;
 
@@ -38,11 +39,11 @@ public class Mission {
 
     }
 
-    MissionResult checkOutcome(){
-
+    String checkOutcome(){
+        return "";
     }
 
     String getLog(){
-
+        return "";
     }
 }
