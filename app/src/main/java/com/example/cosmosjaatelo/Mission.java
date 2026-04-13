@@ -5,8 +5,28 @@ import java.util.List;
 
 public class Mission {
     //variables
-    CrewMember crewA = new CrewMember();
-    CrewMember crewB = new CrewMember();
+    CrewMember crewA = new CrewMember("") {
+        @Override
+        public int act() {
+            return 0;
+        }
+
+        @Override
+        public String getType() {
+            return "";
+        }
+    };
+    CrewMember crewB = new CrewMember("") {
+        @Override
+        public int act() {
+            return 0;
+        }
+
+        @Override
+        public String getType() {
+            return "";
+        }
+    };
 
     Threat threat = new Threat();
 
@@ -26,17 +46,23 @@ public class Mission {
         SPECIAL
     }
 
-    //enumerator
-    void Mission(){
-
+    //constructor
+    public Mission(){
+        this.active = false;
+        this.turnCount = 0;
+        this.missionLog.add("Mission created and ready to lunch");
     }
 
     void launch(){
-
+        this.active = true;
+        this.missionLog.add("Mission Launched!");
     }
 
     void executeTurn(){
-
+        if(this.active){
+            this.turnCount++;
+            this.missionLog.add("Turn " + this.turnCount + " executed.");
+        }
     }
 
     String checkOutcome(){
@@ -44,6 +70,6 @@ public class Mission {
     }
 
     String getLog(){
-        return "";
+        return String.join("\n", missionLog);
     }
 }

@@ -1,4 +1,100 @@
 package com.example.cosmosjaatelo;
 
-public class CrewMember {
+public abstract class CrewMember {
+
+    // private — only this class touches these directly
+    private int id;
+    private String name;
+    private int energy;
+    private int experience;
+
+    private Location location;
+    private boolean inMedbay;
+    private int recoveryTurnsLeft;
+
+    // protected — subclasses set these in their own constructors
+    protected int maxEnergy;
+    protected int baseSkill;
+    protected int resilience;
+    //stat
+
+
+    public CrewMember(String name) {
+        this.name = name;
+        this.experience = 0;
+        this.location = Location.QUARTERS;
+        this.inMedbay = false;
+        this.recoveryTurnsLeft = 0;
+        //stat
+        // subclass constructor must set
+        // maxEnergy first, then call initEnergy() to set energy
+    }
+
+    public void initEnergy() {
+        this.energy = this.maxEnergy;
+    }
+
+
+    public abstract int act();
+
+
+    public void defend(int incomingDamage) {
+        int actualDamage = Math.max(0, incomingDamage - resilience);
+        this.energy = Math.max(0, this.energy - actualDamage);
+    }
+
+    public int getEffectiveSkill() {
+        // XP adds directly to skill — per spec
+        return baseSkill + experience;
+    }
+
+    public void train() {
+        experience++;
+        // add in stat
+    }
+
+    public void resetEnergy() {
+        this.energy = this.maxEnergy;
+    }
+
+    public boolean isDead() {
+        return energy <= 0;
+    }
+
+    public void sendToMedbay(int recoveryMissions) {
+        this.inMedbay = true;
+        this.recoveryTurnsLeft = recoveryMissions;
+        this.location = Location.MEDBAY;
+    }
+
+    public void returnFromMedbay() {
+        this.energy = this.maxEnergy;
+        this.experience = this.experience / 2; // XP penalty
+        this.inMedbay = false;
+        this.recoveryTurnsLeft = 0;
+        this.location = Location.QUARTERS;
+    }
+    // typical getters
+
+
+    public int getId()                  { return id; }
+    public String getName()             { return name; }
+    public int getEnergy()              { return energy; }
+    public int getMaxEnergy()           { return maxEnergy; }
+    public int getExperience()          { return experience; }
+    public int getBaseSkill()           { return baseSkill; }
+    public int getResilience()          { return resilience; }
+    public Location getLocation()       { return location; }
+    public boolean isInMedbay()         { return inMedbay; }
+    public int getRecoveryTurnsLeft()   { return recoveryTurnsLeft; }
+    //stat
+
+    public abstract String getType();
+
+
+    public void setId(int id)                           { this.id = id; }
+    public void setExperience(int experience)           { this.experience = experience; }
+    public void setLocation(Location location)          { this.location = location; }
+    public void setInMedbay(boolean inMedbay)           { this.inMedbay = inMedbay; }
+    public void setRecoveryTurnsLeft(int turns)         { this.recoveryTurnsLeft = turns; }
 }

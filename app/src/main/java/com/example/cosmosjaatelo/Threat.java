@@ -10,7 +10,7 @@ public class Threat {
 
     //methods
     int act(){
-
+        return 0;
     }
 
     void defend(int damage){
@@ -18,10 +18,10 @@ public class Threat {
     }
 
     Boolean isDefeated(){
-
+        return false;
     }
 
     String getDescription(){
-
+        return "";
     }
 }
