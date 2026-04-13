@@ -22,14 +22,14 @@ public class start_menu extends AppCompatActivity {
         playBtn.setOnClickListener(v ->
                 startActivity(new Intent(this, MainActivity.class)));
 
-        missionsBtn.setOnClickListener(v ->
-                startActivity(new Intent(this, StatsActivity.class)));
+        //missionsBtn.setOnClickListener(v ->
+        //        startActivity(new Intent(this, StatsActivity.class)));
 
-        crewBtn.setOnClickListener(v ->
-                startActivity(new Intent(this, StatsActivity.class)));
+        //crewBtn.setOnClickListener(v ->
+        //        startActivity(new Intent(this, StatsActivity.class)));
 
-        recordBtn.setOnClickListener(v ->
-                startActivity(new Intent(this, StatsActivity.class)));
+        //recordBtn.setOnClickListener(v ->
+        //        startActivity(new Intent(this, StatsActivity.class)));
     }
 
     @Override
