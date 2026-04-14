@@ -52,13 +52,18 @@ public class Mission extends AppCompatActivity {
     Boolean active;
     int turnCount;
 
-    int totalHP = crewA.getEnergy()+ crewB.getEnergy();
+    //int totalHP = crewA.getEnergy()+ crewB.getEnergy();
+    int totalHP = 100; //debugging purposes
 
     //GAME LOOOOOOOOOOOP
     Handler gameLoopHandler = new Handler(Looper.getMainLooper());
 
     MissionResult currentStatus = MissionResult.IN_PROGRESS;
     TextView hpTextView;
+
+    Rect meteorRect = new Rect();
+    Rect shipRect = new Rect();
+
 
     enum MissionResult{
         VICTORY,
@@ -124,27 +129,21 @@ public class Mission extends AppCompatActivity {
     void checkCollisions(){
         if (ship == null || ship.shipView == null || !active) return;
 
-        //boundaries of the ship
-        Rect shipRect = new Rect(
-                (int) ship.shipView.getX(),
-                (int) ship.shipView.getY(),
-                (int) (ship.shipView.getX() + ship.shipView.getWidth()),
-                (int) (ship.shipView.getY() + ship.shipView.getHeight())
-        );
-        //AND boundaries of meteors
-        for(int i=threat.activeMeteors.size(); i>=0; i--){
-            if(totalHP > 0){
-                ImageView meteor  = threat.activeMeteors.get(i);
-                if (meteor != null) {
-                    Rect meteorRect = new Rect(
-                            (int) meteor.getX(),
-                            (int) meteor.getY(),
-                            (int) (meteor.getX() + meteor.getWidth()),
-                            (int) (meteor.getY() + meteor.getHeight())
-                    );
+        ship.shipView.getHitRect(shipRect);
 
-                    if(Rect.intersects(shipRect, meteorRect)){
+        for(int i = threat.activeMeteors.size() - 1; i >= 0; i--) {
+            if(totalHP > 0) {
+                ImageView meteor = threat.activeMeteors.get(i);
+                if (meteor != null) {
+                    meteor.getHitRect(meteorRect);
+                    if (Rect.intersects(shipRect, meteorRect)) {
                         ship.shipView.setColorFilter(Color.RED);
+                        ship.shipView.postDelayed(new Runnable() { // nobody asked for this
+                            @Override
+                            public void run() {
+                                ship.shipView.clearColorFilter();
+                            }
+                        }, 1000);
                         totalHP -= 10;
                         hpTextView.setText("HP: " + totalHP);
                         this.missionLog.add("Ship hit! Total HP: " + totalHP);
@@ -153,14 +152,13 @@ public class Mission extends AppCompatActivity {
                         gameLayout.removeView(meteor);
                         threat.activeMeteors.remove(i);
 
-                        if(totalHP <=0){
+                        if (totalHP <= 0) {
                             gameOver();
                             break;
                         }
                     }
                 }
             }
-
         }
     }
 
