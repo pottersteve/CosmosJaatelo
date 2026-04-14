@@ -18,12 +18,13 @@ public class start_menu extends AppCompatActivity {
         Button missionsBtn = findViewById(R.id.starterMissionsBtn);
         Button crewBtn     = findViewById(R.id.starterCrewBtn);
         Button recordBtn   = findViewById(R.id.starterRecordBtn);
-//StatsActivity subject to change
+
+        //StatsActivity subject to change
         playBtn.setOnClickListener(v ->
                 startActivity(new Intent(this, MainActivity.class)));
 
-        //missionsBtn.setOnClickListener(v ->
-        //        startActivity(new Intent(this, StatsActivity.class)));
+        missionsBtn.setOnClickListener(v ->
+                startActivity(new Intent(this, Mission.class)));
 
         //crewBtn.setOnClickListener(v ->
         //        startActivity(new Intent(this, StatsActivity.class)));
@@ -35,6 +36,8 @@ public class start_menu extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        ColonyManager.getInstance().saveToFile(this);
+        new Thread(() -> {
+            ColonyManager.getInstance().loadFromFile(this);
+        }).start();
     }
 }

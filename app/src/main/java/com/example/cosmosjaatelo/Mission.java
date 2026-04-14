@@ -1,9 +1,41 @@
 package com.example.cosmosjaatelo;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Mission {
+import android.widget.ImageView;
+
+class Threat {
+    int level;
+
+
+    //constructor
+    public Threat(){
+        this.level = 0;
+    }
+
+    //methods
+    void spawnRocks(int level){
+
+    }
+
+    void makeRocksFall(){
+
+    }
+
+    Boolean isDefeated(){
+        return false;
+    }
+
+    String getDescription(){
+        return "";
+    }
+}
+
+
+public class Mission  extends AppCompatActivity {
     //variables
     CrewMember crewA = new CrewMember("") {
         @Override
@@ -45,6 +77,8 @@ public class Mission {
         DEFEAND,
         SPECIAL
     }
+
+    //view
 
     //constructor
     public Mission(){
