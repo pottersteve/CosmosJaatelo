@@ -6,88 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-class Threat {
-    int level;
-    Random random = new Random();
-    Handler handler = new Handler(Looper.getMainLooper());
-    int spawnTimeSeconds = 2;
-    int difficulty = 1;
-
-    //screen sizes
-    int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-    int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
-
-    //constructor
-    public Threat(){
-        this.level = 0;
-    }
-
-    //methods
-    // spawns the damn rocks
-    public void startMeteorSpawning(ViewGroup gameLayout, Context context) {
-
-        Runnable meteorSpawner = new Runnable() {
-            @Override
-            public void run() { // Runnable must always use the method name run()
-                ImageView newMeteor = new ImageView(context);
-                newMeteor.setImageResource(R.drawable.meteor);
-
-                //size
-                int meteorSize = 150;
-                newMeteor.setLayoutParams(new ViewGroup.LayoutParams(meteorSize, meteorSize));
-
-                //coordinates
-                int meteorWidth = newMeteor.getWidth();
-                if (meteorWidth == 0) meteorWidth = 100;
-
-                int randomX = random.nextInt(screenWidth - meteorWidth);
-
-                newMeteor.setX(randomX);
-                newMeteor.setY(-200);
-
-                //add to screen
-                gameLayout.addView(newMeteor);
-
-                //make it go down, down sugar
-                makeRocksFall(gameLayout, newMeteor);
-                handler.postDelayed(this, spawnTimeSeconds * 500 * difficulty);
-            }
-        };
-
-        //executes the timer, safely tucked inside our method!
-        handler.post(meteorSpawner);
-    }
-
-    void makeRocksFall(ViewGroup gameLayout, ImageView meteor){
-        meteor.animate()
-                .y(screenHeight + 200)
-                .setDuration(5000)
-                .withEndAction(() -> {
-                    gameLayout.removeView(meteor);
-                })
-                .start();
-    }
-
-    Boolean isDefeated(){
-        return false;
-    }
-
-    String getDescription(){
-        return "";
-    }
-}
-
-class Ship{
-
-}
+import android.widget.TextView;
 
 
 public class Mission extends AppCompatActivity {
@@ -116,10 +47,18 @@ public class Mission extends AppCompatActivity {
     };
 
     Threat threat = new Threat();
-
+    Ship ship;
     List<String> missionLog = new ArrayList<>();
     Boolean active;
     int turnCount;
+
+    int totalHP = crewA.getEnergy()+ crewB.getEnergy();
+
+    //GAME LOOOOOOOOOOOP
+    Handler gameLoopHandler = new Handler(Looper.getMainLooper());
+
+    MissionResult currentStatus = MissionResult.IN_PROGRESS;
+    TextView hpTextView;
 
     enum MissionResult{
         VICTORY,
@@ -148,14 +87,94 @@ public class Mission extends AppCompatActivity {
         launch();
     }
 
+    //MAIN THING THAT MAKES EVERYTHING WORKS, BE CAREFUL
     void launch(){
         this.active = true;
         this.missionLog.add("Mission Launched!");
 
         ViewGroup gameLayout = findViewById(R.id.gameLayout);
+
+        //ship
+        ImageView xmlShipImage = findViewById(R.id.imageView2);
+        ship = new Ship(xmlShipImage);
+
+        //texts
+        hpTextView = findViewById(R.id.hpTextView);
+        hpTextView.setText("HP: " + totalHP);
+
+        //rocks
         threat.startMeteorSpawning(gameLayout, this);
+
+        //functionalities
+        startCollisionChecker();
     }
 
+    //collisions i am crying
+    void startCollisionChecker(){
+        Runnable collisionRunnable = new Runnable() {
+            @Override
+            public void run() {
+                checkCollisions();
+                gameLoopHandler.postDelayed(this, 50);
+            }
+        };
+        gameLoopHandler.post(collisionRunnable);
+    }
+
+    void checkCollisions(){
+        if (ship == null || ship.shipView == null || !active) return;
+
+        //boundaries of the ship
+        Rect shipRect = new Rect(
+                (int) ship.shipView.getX(),
+                (int) ship.shipView.getY(),
+                (int) (ship.shipView.getX() + ship.shipView.getWidth()),
+                (int) (ship.shipView.getY() + ship.shipView.getHeight())
+        );
+        //AND boundaries of meteors
+        for(int i=threat.activeMeteors.size(); i>=0; i--){
+            if(totalHP > 0){
+                ImageView meteor  = threat.activeMeteors.get(i);
+                if (meteor != null) {
+                    Rect meteorRect = new Rect(
+                            (int) meteor.getX(),
+                            (int) meteor.getY(),
+                            (int) (meteor.getX() + meteor.getWidth()),
+                            (int) (meteor.getY() + meteor.getHeight())
+                    );
+
+                    if(Rect.intersects(shipRect, meteorRect)){
+                        ship.shipView.setColorFilter(Color.RED);
+                        totalHP -= 10;
+                        hpTextView.setText("HP: " + totalHP);
+                        this.missionLog.add("Ship hit! Total HP: " + totalHP);
+
+                        ViewGroup gameLayout = findViewById(R.id.gameLayout);
+                        gameLayout.removeView(meteor);
+                        threat.activeMeteors.remove(i);
+
+                        if(totalHP <=0){
+                            gameOver();
+                            break;
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    void gameOver(){
+        this.active = false;
+        this.currentStatus = MissionResult.DEFEAT;
+        this.missionLog.add("Ship destroyed! Mission Defeat.");
+
+        //stop everything
+        gameLoopHandler.removeCallbacksAndMessages(null);
+        threat.stopSpawning();
+    }
+
+    //methods from uml
     void executeTurn(){
         if(this.active){
             this.turnCount++;
