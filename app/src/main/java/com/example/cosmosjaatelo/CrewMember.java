@@ -49,8 +49,11 @@ public abstract class CrewMember {
     }
 
     public void train() {
-        experience++;
-        // add in stat
+
+        if (this.energy > 0) {
+            this.experience++;
+            this.energy--;
+        }
     }
 
     public void resetEnergy() {
