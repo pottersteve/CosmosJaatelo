@@ -2,16 +2,13 @@ package com.example.cosmosjaatelo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.MotionEvent;
@@ -25,7 +22,6 @@ public class Ship{
     ImageView shipView;
     int speed = 75;
     int shipSize = 60;  //the size of the sprite, kind of has to be hard coded
-    int thingThatfalls = -1;
     //screen sizes
     int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
@@ -126,20 +122,48 @@ public class Ship{
 
                     if(Rect.intersects(bulletRect, meteorRect)){
                         collided = true;
-                        Random random = new Random();
-                        int chance = random.nextInt(3);
-                        if (chance == 0){
-                            meteor.setImageResource((R.drawable.explosion));
-                            meteor.setTag(0);
+                        boolean isDestroyed = true;
+                        if (meteor.getTag() != null && meteor.getTag() instanceof int[]) {
+                            int[] meteorData = (int[]) meteor.getTag();
+
+                            meteorData[1] -= 1;
+
+                            if (meteorData[1] > 0) {
+                                isDestroyed = false;
+                                meteor.setTag(meteorData);
+                                meteor.setColorFilter(Color.WHITE);
+                                meteor.postDelayed(meteor::clearColorFilter, 100);
+                            }
                         }
-                        else if (chance == 1){
-                            meteor.setImageResource((R.drawable.icecream));
-                            meteor.setTag(1);
+
+                        if (isDestroyed) {
+                            Random random = new Random();
+                            int chance = random.nextInt(3);
+                            if (chance == 0){
+                                ViewGroup.LayoutParams params = meteor.getLayoutParams();
+                                params.width = 100;
+                                params.height = 100;
+                                meteor.setLayoutParams(params);
+
+                                meteor.setImageResource((R.drawable.explosion));
+                                meteor.setTag(0);
+                            }
+                            else if (chance == 1){
+                                //unnecessary code but like the icecreams were too big
+                                ViewGroup.LayoutParams params = meteor.getLayoutParams();
+                                params.width = 100;
+                                params.height = 100;
+                                meteor.setLayoutParams(params);
+
+                                meteor.setImageResource((R.drawable.icecream));
+                                meteor.setTag(1);
+                            }
+                            else{
+                                gameLayout.removeView(meteor);
+                                activeMeteors.remove(meteor);
+                            }
                         }
-                        else{
-                            gameLayout.removeView(meteor);
-                            activeMeteors.remove(meteor);
-                        }
+
                         break;
                     }
                 }

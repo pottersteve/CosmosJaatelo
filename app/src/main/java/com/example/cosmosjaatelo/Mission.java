@@ -4,18 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Objects;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -46,6 +42,8 @@ public class Mission extends AppCompatActivity {
             return "";
         }
     };
+    String roleA = crewA.getType();
+    String roleB = crewB.getType();
 
     Threat threat = new Threat();
     Ship ship;
@@ -134,6 +132,7 @@ public class Mission extends AppCompatActivity {
     }
 
     //MAIN THING THAT MAKES EVERYTHING WORKS, BE CAREFUL
+    @SuppressLint("SetTextI18n")
     void launch(){
         this.active = true;
         this.missionLog.add("Mission Launched!");
@@ -196,6 +195,7 @@ public class Mission extends AppCompatActivity {
         }, 1000);
     }
 
+    @SuppressLint("SetTextI18n")
     void checkCollisions(){
         if (ship == null || ship.shipView == null || !active) return;
 
@@ -209,15 +209,31 @@ public class Mission extends AppCompatActivity {
                     if (Rect.intersects(shipRect, meteorRect)) {
 
                         int currentMeteorType = -1;
-                        if(meteor.getTag() != null){
-                            currentMeteorType = (int) meteor.getTag();
+                        if (meteor.getTag() != null) {
+                            if (meteor.getTag() instanceof int[]) {
+                                int[] meteorData = (int[]) meteor.getTag();
+                                currentMeteorType = meteorData[0];
+                            } else {
+                                currentMeteorType = (int) meteor.getTag();
+                            }
                         }
                         if(currentMeteorType == 0){
                             gotHit();
-                            totalHP -= 10;
+                            if(Objects.equals(roleA, "Scientist") || Objects.equals(roleB, "Scientist")){
+                                totalHP -= 5;
+                            }
+                            else{
+                                totalHP -= 10;
+                            }
+
                         } else if (currentMeteorType == -1){
                             gotHit();
-                            totalHP -= 25;
+                            if(Objects.equals(roleA, "Scientist") || Objects.equals(roleB, "Scientist")){
+                                totalHP -= 20;
+                            }else{
+                                totalHP -= 25;
+                            }
+
                         } else{
                             iceCreamsPerMission++;
                         }
@@ -253,6 +269,7 @@ public class Mission extends AppCompatActivity {
         final double drainRateB = (double) b / 180.0;
 
         Runnable drainRunnable = new Runnable() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void run() {
                 if(active && totalHP>0){
@@ -276,6 +293,7 @@ public class Mission extends AppCompatActivity {
         energyDrainHandler.post(drainRunnable);
     }
 
+    @SuppressLint("SetTextI18n")
     void heal(){
         if(iceCreamsPerMission > 2){
             iceCreamsPerMission -= 2;
@@ -301,6 +319,7 @@ public class Mission extends AppCompatActivity {
         }, 2000);
     }
 
+    @SuppressLint("SetTextI18n")
     void repairShip(){
         if(iceCreamsPerMission > 5){
             iceCreamsPerMission -= 5;

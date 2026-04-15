@@ -6,16 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -61,9 +55,24 @@ public class Threat {
                 ImageView newMeteor = new ImageView(context);
                 newMeteor.setImageResource(R.drawable.meteor);
 
-                //size
-                int meteorSize = 150;
+                //sizing
+                int randomChance = random.nextInt(5);
+                int meteorSize;
+                int meteorType;
+                int meteorHp;
+
+                if(randomChance > 3){
+                    meteorSize = 250;
+                    meteorType = -1;
+                    meteorHp = 3;
+                }
+                else{
+                    meteorSize = 150;
+                    meteorType = 0;
+                    meteorHp = 1;
+                }
                 newMeteor.setLayoutParams(new ViewGroup.LayoutParams(meteorSize, meteorSize));
+                newMeteor.setTag(new int[]{meteorType, meteorHp});
 
                 //coordinates
                 int meteorWidth = newMeteor.getWidth();
@@ -90,7 +99,7 @@ public class Threat {
                     currentFallDuration -= fallDurationDecrease;
                 }
 
-                handler.postDelayed(this, spawnTimeSeconds * 500 * difficulty);
+                handler.postDelayed(this, (long) spawnTimeSeconds * 500 * difficulty);
             }
         };
 
