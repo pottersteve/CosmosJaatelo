@@ -55,14 +55,25 @@ public class Mission extends AppCompatActivity {
 
     //int totalHP = crewA.getEnergy()+ crewB.getEnergy();
     int totalHP = 100; //debugging purposes
+    //int energyCrewA = crewA.getEnergy();
+    //int energyCrewB = crewB.getEnergy();
+    int energyCrewA = 70; //debugging purposes
+    int energyCrewB = 90;//debugging purposes
+    double exactEnergyA;
+    double exactEnergyB;
+
     int iceCreamsPerMission;
 
     //GAME LOOOOOOOOOOOP
     Handler gameLoopHandler = new Handler(Looper.getMainLooper());
+    Handler energyDrainHandler = new Handler(Looper.getMainLooper());
 
     MissionResult currentStatus = MissionResult.IN_PROGRESS;
     TextView hpTextView;
     TextView iceacreamTextView;
+    TextView energyCrewATextView;
+    TextView energyCrewBTextView;
+    TextView textsPlayerShouldKnowTexrView;
 
     Rect meteorRect = new Rect();
     Rect shipRect = new Rect();
@@ -93,12 +104,29 @@ public class Mission extends AppCompatActivity {
         this.iceCreamsPerMission = 0;
         this.missionLog.add("Mission created and ready to launch");
 
+        launch();
+
+
         Button shootButton = findViewById(R.id.shootButton);
         shootButton.setOnClickListener(v -> {
             ship.shoot(threat.activeMeteors); //bless javascript
         });
 
-        launch();
+        //special abilities
+
+        //if medic
+        Button healButton = findViewById(R.id.healButton);
+        healButton.setOnClickListener(v -> {
+            heal();
+        });
+        //if engineer
+        Button repairButton = findViewById(R.id.repairButton);
+        repairButton.setOnClickListener(v ->{
+            repairShip();
+        });
+        //if pilot
+        ship.speed += 50;
+
 
 
     }
@@ -119,12 +147,28 @@ public class Mission extends AppCompatActivity {
         hpTextView.setText("HP: " + totalHP);
         iceacreamTextView = findViewById(R.id.icecreamTextView);
         iceacreamTextView.setText("Ice Creams: " + iceCreamsPerMission);
+        energyCrewATextView = findViewById(R.id.energyATextView);
+        energyCrewATextView.setText("Energy a: " + energyCrewA);
+        energyCrewBTextView = findViewById(R.id.energyBTextView);
+        energyCrewBTextView.setText("Energy b: " + energyCrewB);
+        textsPlayerShouldKnowTexrView = findViewById(R.id.textsPlayerShouldKnow);
+        textsPlayerShouldKnowTexrView.setText("");
 
         //rocks
         threat.startMeteorSpawning(gameLayout, this);
 
         //functionalities
         startCollisionChecker();
+        energyDrain(energyCrewA , energyCrewB);
+    }
+
+    //should have done this from the start, change later
+    void checkGameState() {
+        if (!active) return;
+        if (energyCrewA <= 0 && energyCrewB <= 0) {
+            this.missionLog.add("Crew ran out of energy!");
+            gameOver();
+        }
     }
 
     //collisions i am crying
@@ -133,6 +177,7 @@ public class Mission extends AppCompatActivity {
             @Override
             public void run() {
                 checkCollisions();
+                checkGameState();
                 gameLoopHandler.postDelayed(this, 50);
             }
         };
@@ -189,14 +234,72 @@ public class Mission extends AppCompatActivity {
                             break;
                         }
 
-                        if(iceCreamsPerMission == 10){
+                        //should we?
+                        /*if(iceCreamsPerMission == 10){
                             gameWon();
                             break;
-                        }
+                        }*/
                     }
                 }
             }
         }
+    }
+
+    void energyDrain(int a, int b){
+        exactEnergyA = a;
+        exactEnergyB = b;
+        final double drainRateA = (double) a / 180.0;
+        final double drainRateB = (double) b / 180.0;
+
+        Runnable drainRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if(active && totalHP>0){
+                    exactEnergyA -= drainRateA;
+                    exactEnergyB -= drainRateB;
+
+                    energyCrewA = (int) exactEnergyA;
+                    energyCrewB = (int) exactEnergyB;
+
+                    energyCrewATextView.setText("Energy a: " + energyCrewA);
+                    energyCrewBTextView.setText("Energy b: " + energyCrewB);
+
+                    energyDrainHandler.postDelayed(this, 1000);
+                }
+            }
+        };
+        energyDrainHandler.post(drainRunnable);
+    }
+
+    void heal(){
+        if(iceCreamsPerMission > 2){
+            iceCreamsPerMission -= 2;
+            iceacreamTextView.setText("Ice Creams: " + iceCreamsPerMission);
+            textsPlayerShouldKnowTexrView.setText("Crew Healed!");
+
+            if(energyCrewB < energyCrewA){
+                exactEnergyB += 25;
+                energyCrewB = (int) exactEnergyB;
+                energyCrewBTextView.setText("Energy B: " + energyCrewB);
+            }
+            else {
+                exactEnergyA += 25;
+                energyCrewA = (int) exactEnergyA;
+                energyCrewATextView.setText("Energy A: " + energyCrewA);
+            }
+        }
+        else{
+            textsPlayerShouldKnowTexrView.setText("Not enough resources!");
+        }
+    }
+
+    void repairShip(){
+        if(iceCreamsPerMission>5){
+            iceCreamsPerMission -= 5;
+            iceacreamTextView.setText("Ice Creams: " + iceCreamsPerMission);
+            textsPlayerShouldKnowTexrView.setText("Ship Repaired!");
+        }
+        textsPlayerShouldKnowTexrView.setText("");
     }
 
     void gameOver(){
