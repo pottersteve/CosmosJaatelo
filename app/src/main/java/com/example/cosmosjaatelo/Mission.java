@@ -17,6 +17,7 @@ import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -54,12 +55,14 @@ public class Mission extends AppCompatActivity {
 
     //int totalHP = crewA.getEnergy()+ crewB.getEnergy();
     int totalHP = 100; //debugging purposes
+    int iceCreamsPerMission;
 
     //GAME LOOOOOOOOOOOP
     Handler gameLoopHandler = new Handler(Looper.getMainLooper());
 
     MissionResult currentStatus = MissionResult.IN_PROGRESS;
     TextView hpTextView;
+    TextView iceacreamTextView;
 
     Rect meteorRect = new Rect();
     Rect shipRect = new Rect();
@@ -87,9 +90,17 @@ public class Mission extends AppCompatActivity {
         // "constructor"
         this.active = false;
         this.turnCount = 0;
+        this.iceCreamsPerMission = 0;
         this.missionLog.add("Mission created and ready to launch");
 
+        Button shootButton = findViewById(R.id.shootButton);
+        shootButton.setOnClickListener(v -> {
+            ship.shoot(threat.activeMeteors); //bless javascript
+        });
+
         launch();
+
+
     }
 
     //MAIN THING THAT MAKES EVERYTHING WORKS, BE CAREFUL
@@ -106,6 +117,8 @@ public class Mission extends AppCompatActivity {
         //texts
         hpTextView = findViewById(R.id.hpTextView);
         hpTextView.setText("HP: " + totalHP);
+        iceacreamTextView = findViewById(R.id.icecreamTextView);
+        iceacreamTextView.setText("Ice Creams: " + iceCreamsPerMission);
 
         //rocks
         threat.startMeteorSpawning(gameLayout, this);
@@ -126,6 +139,16 @@ public class Mission extends AppCompatActivity {
         gameLoopHandler.post(collisionRunnable);
     }
 
+    void gotHit(){
+        ship.shipView.setColorFilter(Color.RED);
+        ship.shipView.postDelayed(new Runnable() { // nobody asked for this
+            @Override
+            public void run() {
+                ship.shipView.clearColorFilter();
+            }
+        }, 1000);
+    }
+
     void checkCollisions(){
         if (ship == null || ship.shipView == null || !active) return;
 
@@ -137,16 +160,25 @@ public class Mission extends AppCompatActivity {
                 if (meteor != null) {
                     meteor.getHitRect(meteorRect);
                     if (Rect.intersects(shipRect, meteorRect)) {
-                        ship.shipView.setColorFilter(Color.RED);
-                        ship.shipView.postDelayed(new Runnable() { // nobody asked for this
-                            @Override
-                            public void run() {
-                                ship.shipView.clearColorFilter();
-                            }
-                        }, 1000);
-                        totalHP -= 10;
+
+                        int currentMeteorType = -1;
+                        if(meteor.getTag() != null){
+                            currentMeteorType = (int) meteor.getTag();
+                        }
+                        if(currentMeteorType == 0){
+                            gotHit();
+                            totalHP -= 10;
+                        } else if (currentMeteorType == -1){
+                            gotHit();
+                            totalHP -= 25;
+                        } else{
+                            iceCreamsPerMission++;
+                        }
+
+                        //updating texts
                         hpTextView.setText("HP: " + totalHP);
                         this.missionLog.add("Ship hit! Total HP: " + totalHP);
+                        iceacreamTextView.setText("Ice Creams: " + iceCreamsPerMission);
 
                         ViewGroup gameLayout = findViewById(R.id.gameLayout);
                         gameLayout.removeView(meteor);
@@ -154,6 +186,11 @@ public class Mission extends AppCompatActivity {
 
                         if (totalHP <= 0) {
                             gameOver();
+                            break;
+                        }
+
+                        if(iceCreamsPerMission == 10){
+                            gameWon();
                             break;
                         }
                     }
@@ -166,6 +203,16 @@ public class Mission extends AppCompatActivity {
         this.active = false;
         this.currentStatus = MissionResult.DEFEAT;
         this.missionLog.add("Ship destroyed! Mission Defeat.");
+
+        //stop everything
+        gameLoopHandler.removeCallbacksAndMessages(null);
+        threat.stopSpawning();
+    }
+
+    void gameWon(){
+        this.active = false;
+        this.currentStatus = MissionResult.VICTORY;
+        this.missionLog.add("Got the amount needed!! Mission successful!");
 
         //stop everything
         gameLoopHandler.removeCallbacksAndMessages(null);
