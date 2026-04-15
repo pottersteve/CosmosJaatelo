@@ -126,20 +126,48 @@ public class Ship{
 
                     if(Rect.intersects(bulletRect, meteorRect)){
                         collided = true;
-                        Random random = new Random();
-                        int chance = random.nextInt(3);
-                        if (chance == 0){
-                            meteor.setImageResource((R.drawable.explosion));
-                            meteor.setTag(0);
+                        boolean isDestroyed = true;
+                        if (meteor.getTag() != null && meteor.getTag() instanceof int[]) {
+                            int[] meteorData = (int[]) meteor.getTag();
+
+                            meteorData[1] -= 1;
+
+                            if (meteorData[1] > 0) {
+                                isDestroyed = false;
+                                meteor.setTag(meteorData);
+                                meteor.setColorFilter(Color.WHITE);
+                                meteor.postDelayed(() -> meteor.clearColorFilter(), 100);
+                            }
                         }
-                        else if (chance == 1){
-                            meteor.setImageResource((R.drawable.icecream));
-                            meteor.setTag(1);
+
+                        if (isDestroyed) {
+                            Random random = new Random();
+                            int chance = random.nextInt(3);
+                            if (chance == 0){
+                                ViewGroup.LayoutParams params = meteor.getLayoutParams();
+                                params.width = 100;
+                                params.height = 100;
+                                meteor.setLayoutParams(params);
+
+                                meteor.setImageResource((R.drawable.explosion));
+                                meteor.setTag(0);
+                            }
+                            else if (chance == 1){
+                                //unnecessary code but like the icecreams were too big
+                                ViewGroup.LayoutParams params = meteor.getLayoutParams();
+                                params.width = 100;
+                                params.height = 100;
+                                meteor.setLayoutParams(params);
+
+                                meteor.setImageResource((R.drawable.icecream));
+                                meteor.setTag(1);
+                            }
+                            else{
+                                gameLayout.removeView(meteor);
+                                activeMeteors.remove(meteor);
+                            }
                         }
-                        else{
-                            gameLayout.removeView(meteor);
-                            activeMeteors.remove(meteor);
-                        }
+
                         break;
                     }
                 }

@@ -61,9 +61,24 @@ public class Threat {
                 ImageView newMeteor = new ImageView(context);
                 newMeteor.setImageResource(R.drawable.meteor);
 
-                //size
-                int meteorSize = 150;
+                //sizing
+                int randomChance = random.nextInt(5);
+                int meteorSize;
+                int meteorType;
+                int meteorHp;
+
+                if(randomChance > 3){
+                    meteorSize = 250;
+                    meteorType = -1;
+                    meteorHp = 3;
+                }
+                else{
+                    meteorSize = 150;
+                    meteorType = 0;
+                    meteorHp = 1;
+                }
                 newMeteor.setLayoutParams(new ViewGroup.LayoutParams(meteorSize, meteorSize));
+                newMeteor.setTag(new int[]{meteorType, meteorHp});
 
                 //coordinates
                 int meteorWidth = newMeteor.getWidth();

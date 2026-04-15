@@ -46,6 +46,8 @@ public class Mission extends AppCompatActivity {
             return "";
         }
     };
+    String roleA = crewA.getType();
+    String roleB = crewB.getType();
 
     Threat threat = new Threat();
     Ship ship;
@@ -209,15 +211,31 @@ public class Mission extends AppCompatActivity {
                     if (Rect.intersects(shipRect, meteorRect)) {
 
                         int currentMeteorType = -1;
-                        if(meteor.getTag() != null){
-                            currentMeteorType = (int) meteor.getTag();
+                        if (meteor.getTag() != null) {
+                            if (meteor.getTag() instanceof int[]) {
+                                int[] meteorData = (int[]) meteor.getTag();
+                                currentMeteorType = meteorData[0];
+                            } else {
+                                currentMeteorType = (int) meteor.getTag();
+                            }
                         }
                         if(currentMeteorType == 0){
                             gotHit();
-                            totalHP -= 10;
+                            if(roleA == "Scientist" || roleB == "Scientist"){
+                                totalHP -= 5;
+                            }
+                            else{
+                                totalHP -= 10;
+                            }
+
                         } else if (currentMeteorType == -1){
                             gotHit();
-                            totalHP -= 25;
+                            if(roleA == "Scientist" || roleB == "Scientist"){
+                                totalHP -= 20;
+                            }else{
+                                totalHP -= 25;
+                            }
+
                         } else{
                             iceCreamsPerMission++;
                         }
