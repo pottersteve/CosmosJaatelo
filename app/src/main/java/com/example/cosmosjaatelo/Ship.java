@@ -2,16 +2,13 @@ package com.example.cosmosjaatelo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.MotionEvent;
@@ -25,7 +22,6 @@ public class Ship{
     ImageView shipView;
     int speed = 75;
     int shipSize = 60;  //the size of the sprite, kind of has to be hard coded
-    int thingThatfalls = -1;
     //screen sizes
     int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
@@ -136,7 +132,7 @@ public class Ship{
                                 isDestroyed = false;
                                 meteor.setTag(meteorData);
                                 meteor.setColorFilter(Color.WHITE);
-                                meteor.postDelayed(() -> meteor.clearColorFilter(), 100);
+                                meteor.postDelayed(meteor::clearColorFilter, 100);
                             }
                         }
 

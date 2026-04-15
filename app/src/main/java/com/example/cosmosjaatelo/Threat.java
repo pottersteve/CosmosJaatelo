@@ -6,16 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -105,7 +99,7 @@ public class Threat {
                     currentFallDuration -= fallDurationDecrease;
                 }
 
-                handler.postDelayed(this, spawnTimeSeconds * 500 * difficulty);
+                handler.postDelayed(this, (long) spawnTimeSeconds * 500 * difficulty);
             }
         };
 
