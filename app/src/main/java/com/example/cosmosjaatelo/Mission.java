@@ -52,6 +52,7 @@ public class Mission extends AppCompatActivity {
     List<String> missionLog = new ArrayList<>();
     Boolean active;
     int turnCount;
+    int weWantThisManyIceCreams;
 
     //int totalHP = crewA.getEnergy()+ crewB.getEnergy();
     int totalHP = 100; //debugging purposes
@@ -102,6 +103,7 @@ public class Mission extends AppCompatActivity {
         this.active = false;
         this.turnCount = 0;
         this.iceCreamsPerMission = 0;
+        this.weWantThisManyIceCreams = 20;
         this.missionLog.add("Mission created and ready to launch");
 
         launch();
@@ -234,11 +236,10 @@ public class Mission extends AppCompatActivity {
                             break;
                         }
 
-                        //should we?
-                        /*if(iceCreamsPerMission == 10){
+                        if(iceCreamsPerMission == weWantThisManyIceCreams){
                             gameWon();
                             break;
-                        }*/
+                        }
                     }
                 }
             }
@@ -260,6 +261,10 @@ public class Mission extends AppCompatActivity {
 
                     energyCrewA = (int) exactEnergyA;
                     energyCrewB = (int) exactEnergyB;
+
+                    if(energyCrewA<=0 || energyCrewB<=0){
+                        gameOver(); //and that specific crew member goes to medbay
+                    }
 
                     energyCrewATextView.setText("Energy a: " + energyCrewA);
                     energyCrewBTextView.setText("Energy b: " + energyCrewB);
@@ -291,15 +296,26 @@ public class Mission extends AppCompatActivity {
         else{
             textsPlayerShouldKnowTexrView.setText("Not enough resources!");
         }
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            textsPlayerShouldKnowTexrView.setText("");
+        }, 2000);
     }
 
     void repairShip(){
-        if(iceCreamsPerMission>5){
+        if(iceCreamsPerMission > 5){
             iceCreamsPerMission -= 5;
+            totalHP += 25;
             iceacreamTextView.setText("Ice Creams: " + iceCreamsPerMission);
             textsPlayerShouldKnowTexrView.setText("Ship Repaired!");
+            hpTextView.setText("HP: " + totalHP);
+        } else {
+            textsPlayerShouldKnowTexrView.setText("Not enough resources!");
         }
-        textsPlayerShouldKnowTexrView.setText("");
+
+        // clear the text after 2 seconds (2000 milliseconds)
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            textsPlayerShouldKnowTexrView.setText("");
+        }, 2000);
     }
 
     void gameOver(){

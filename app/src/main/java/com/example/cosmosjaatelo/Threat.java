@@ -27,6 +27,16 @@ public class Threat {
     int difficulty = 1;
     public boolean isSpawning = false;
 
+    // How fast they spawn
+    int currentSpawnDelay = 1500;
+    int minSpawnDelay = 300;
+    int spawnDelayDecrease = 25;
+
+    // How fast they fall down, down sugar
+    int currentFallDuration = 5000;
+    int minFallDuration = 2000;
+    int fallDurationDecrease = 50;
+
     //active threats
     public List<ImageView> activeMeteors = new ArrayList<>();
 
@@ -71,6 +81,15 @@ public class Threat {
 
                 //make it go down, down sugar
                 makeRocksFall(gameLayout, newMeteor);
+
+                //difficulties
+                if (currentSpawnDelay > minSpawnDelay) {
+                    currentSpawnDelay -= spawnDelayDecrease;
+                }
+                if (currentFallDuration > minFallDuration) {
+                    currentFallDuration -= fallDurationDecrease;
+                }
+
                 handler.postDelayed(this, spawnTimeSeconds * 500 * difficulty);
             }
         };
