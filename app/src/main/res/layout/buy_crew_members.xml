@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#1A0A2E"
+    android:padding="12dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+        <Button android:id="@+id/backBtnBuy" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="← Back" android:textColor="#FFB3DE" android:backgroundTint="#2D1050" android:textSize="11sp"/>
+        <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RECRUITMENT HUB" android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="16sp"/>
+        <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1"/>
+        <TextView android:id="@+id/currencyTextBuy" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 🍦" android:textColor="#00FF00" android:textStyle="bold" android:textSize="16sp"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="12dp">
+        <LinearLayout
+            android:id="@+id/buyRecruitContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

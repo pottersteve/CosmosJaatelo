@@ -24,6 +24,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".Mission" />
         <activity android:name=".GameOverActivity" />
+        <activity android:name=".NewCrewMember" />
         <activity android:name=".ColonyStats"
             tools:ignore="Instantiatable" />
 

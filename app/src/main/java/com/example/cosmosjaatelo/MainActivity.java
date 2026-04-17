@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     // ui references
     private TextView currencyText;
-    private GridLayout characterGrid;
+    private LinearLayout characterGrid;
     private ColonyManager manager;
     private List<Integer> selectedCrewIds = new ArrayList<>();
 
@@ -51,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        characterGrid = findViewById(R.id.characterGrid);
         currencyText = findViewById(R.id.currencyText);
+        characterGrid = findViewById(R.id.characterGrid);
     }
 
     private void setupButtons() {
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
         // store/get crew :placeholder for now
         findViewById(R.id.getNewCharsBtn).setOnClickListener(v -> {
-            Toast.makeText(this, "crew shop coming soon", Toast.LENGTH_SHORT).show();
+            startActivity(new android.content.Intent(this, NewCrewMember.class));
         });
 
         // train button: placeholder
@@ -109,10 +111,45 @@ public class MainActivity extends AppCompatActivity {
 
     private void refreshUI() {
         characterGrid.removeAllViews();
+        LinearLayout currentRow = null;
+        int index = 0;
 
         // loop through every single crew member in the ColonyManager
         for (CrewMember crew : manager) {
-            View cardView = getLayoutInflater().inflate(R.layout.crew_card, characterGrid, false);
+
+            // Create a new horizontal row for every 2 items
+            if (index % 2 == 0) {
+                currentRow = new LinearLayout(this);
+                currentRow.setOrientation(LinearLayout.HORIZONTAL);
+                currentRow.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                characterGrid.addView(currentRow);
+            }
+
+            // Inflate into currentRow instead of characterGrid
+            View cardView = getLayoutInflater().inflate(R.layout.crew_card, currentRow, false);
+
+            // Hide the cost text since they already own this crew member
+            cardView.findViewById(R.id.card_cost).setVisibility(View.GONE);
+
+            ImageView characterImage = cardView.findViewById(R.id.card_image);
+            switch (crew.getType()) {
+                case "Medic":
+                    characterImage.setImageResource(R.drawable.crew_medic);
+                    break;
+                case "Pilot":
+                    characterImage.setImageResource(R.drawable.crew_pilot);
+                    break;
+                case "Engineer":
+                    characterImage.setImageResource(R.drawable.crew_engineer);
+                    break;
+                case "Scientist":
+                    characterImage.setImageResource(R.drawable.crew_scientist);
+                    break;
+                case "Soldier":
+                    characterImage.setImageResource(R.drawable.crew_scientist); // Assuming this should be crew_soldier if you have one!
+                    break;
+            }
 
             TextView nameRole = cardView.findViewById(R.id.card_name_role);
             TextView locText = cardView.findViewById(R.id.card_loc);
@@ -124,10 +161,10 @@ public class MainActivity extends AppCompatActivity {
             expText.setText(" Exp: " + crew.getExperience());
             energyText.setText(" Energy: " + crew.getEnergy() + "%");
 
-            //GOD DAMN SELECTION LOGIC
+            // SELECTION LOGIC
             android.graphics.drawable.GradientDrawable gd = new android.graphics.drawable.GradientDrawable();
             gd.setColor(android.graphics.Color.parseColor("#2D1050"));
-            gd.setCornerRadius(8f); //gemini said to ask rounded corners.....
+            gd.setCornerRadius(8f);
 
             if (selectedCrewIds.contains(crew.getId())) {
                 gd.setStroke(6, android.graphics.Color.GREEN);
@@ -136,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             }
             cardView.setBackground(gd);
 
-            //clilckable cards
+            // Clickable cards
             cardView.setOnClickListener(v -> {
                 if (crew.getLocation() != Location.QUARTERS) {
                     Toast.makeText(this, crew.getName() + " is currently unavailable.", Toast.LENGTH_SHORT).show();
@@ -144,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (selectedCrewIds.contains(crew.getId())) {
-                    // deselection o.o
                     selectedCrewIds.remove((Integer) crew.getId());
                 } else {
                     if (selectedCrewIds.size() < 2) {
@@ -156,24 +192,27 @@ public class MainActivity extends AppCompatActivity {
                 refreshUI();
             });
 
-            // greyscale logic if they are training
+            // Greyscale logic
             if (crew.getLocation() == Location.SIMULATOR) {
                 locText.setTextColor(android.graphics.Color.GRAY);
                 expText.setTextColor(android.graphics.Color.GRAY);
                 energyText.setTextColor(android.graphics.Color.GRAY);
                 nameRole.setTextColor(android.graphics.Color.GRAY);
+                characterImage.setColorFilter(android.graphics.Color.GRAY); // Greyscale the image too!
             } else {
                 locText.setTextColor(android.graphics.Color.parseColor("#C084B8"));
                 expText.setTextColor(android.graphics.Color.parseColor("#C084B8"));
                 energyText.setTextColor(android.graphics.Color.parseColor("#C084B8"));
                 nameRole.setTextColor(android.graphics.Color.parseColor("#FFB3DE"));
+                characterImage.clearColorFilter(); // Remove greyscale
             }
 
-            //
-            characterGrid.addView(cardView);
+            // Add the card to the current row, then increment index
+            currentRow.addView(cardView);
+            index++;
         }
 
-        //current colony currency
+        // Current colony currency
         android.content.SharedPreferences prefs = getSharedPreferences("CosmosSaveData", MODE_PRIVATE);
         int totalIceCreams = prefs.getInt("TOTAL_ICE_CREAMS", 0);
         currencyText.setText(String.valueOf(totalIceCreams));
