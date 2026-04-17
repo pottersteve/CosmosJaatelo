@@ -36,6 +36,9 @@ public class ColonyManager implements Iterable<CrewMember> {
     }
 
     //crew management
+    public CrewMember getCrewById(int id) {
+        return crewMap.get(id);
+    }
 
     public CrewMember recruitCrew(String name, String type) {
         CrewMember c = createByType(name, type);

@@ -1,20 +1,26 @@
 package com.example.cosmosjaatelo;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     // ui references
-    private TextView annaLoc, annaExp, annaEnergy;
-    private TextView jaxLoc, jaxExp, jaxEnergy;
     private TextView currencyText;
-
-
+    private GridLayout characterGrid;
     private ColonyManager manager;
+    private List<Integer> selectedCrewIds = new ArrayList<>();
+
+
     private CrewMember anna;
     private CrewMember jax;
 
@@ -33,37 +39,40 @@ public class MainActivity extends AppCompatActivity {
         refreshUI();
     }
 
-    private void setupInitialCrew() {
-        // search through manager to see if they already exist from a previous save
-        for (CrewMember c : manager) {
-            if (c.getName().equalsIgnoreCase("Anna")) anna = c;
-            if (c.getName().equalsIgnoreCase("Jax")) jax = c;
-        }
+    private void setupInitialCrew() {//im sorry vania, but this is how we generated them
+        //starter squad
+        if (!manager.iterator().hasNext()) {
+            manager.recruitCrew("Anna", "Medic");
+            manager.recruitCrew("Jax", "Soldier");
+            manager.recruitCrew("Elena", "Engineer");
+            manager.recruitCrew("Kael", "Pilot");
+            manager.recruitCrew("Nova", "Scientist");
 
-        // if they don't exist (first launch), recruit them through the manager
-        if (anna == null) anna = manager.recruitCrew("Anna", "Medic");
-        if (jax == null) jax = manager.recruitCrew("Jax", "Soldier");
+            // save immediately so they are written to file
+            manager.saveToFile(this);
+        }
     }
 
     private void initializeViews() {
-        // anna fields
-        annaLoc = findViewById(R.id.anna_loc);
-        annaExp = findViewById(R.id.anna_exp);
-        annaEnergy = findViewById(R.id.anna_energy);
-
-        // jax fields
-        jaxLoc = findViewById(R.id.jax_loc);
-        jaxExp = findViewById(R.id.jax_exp);
-        jaxEnergy = findViewById(R.id.jax_energy);
-
+        characterGrid = findViewById(R.id.characterGrid);
         currencyText = findViewById(R.id.currencyText);
     }
 
     private void setupButtons() {
         // play button: saves current state and launches the mission screen
         findViewById(R.id.playBtn).setOnClickListener(v -> {
+            if (selectedCrewIds.size() != 2) {
+                Toast.makeText(this, "Please select exactly 2 crew members for the mission!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             manager.saveToFile(this);
             Intent intent = new Intent(this, Mission.class);
+
+            intent.putExtra("CREW_A_ID", selectedCrewIds.get(0));
+            intent.putExtra("CREW_B_ID", selectedCrewIds.get(1));
+
+            selectedCrewIds.clear();
             startActivity(intent);
         });
 
@@ -80,28 +89,90 @@ public class MainActivity extends AppCompatActivity {
 
         // train button: placeholder
         findViewById(R.id.trainBtn).setOnClickListener(v -> {
-            Toast.makeText(this, "training system disabled", Toast.LENGTH_SHORT).show();
+            if (selectedCrewIds.size() != 1) {
+                Toast.makeText(this, "Please select exactly 1 crew member to train!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            int idToTrain = selectedCrewIds.get(0);
+            manager.moveCrew(idToTrain, Location.SIMULATOR);
+            manager.trainCrew(idToTrain);
+
+            Toast.makeText(this, manager.getCrewById(idToTrain).getName() + " finished training!", Toast.LENGTH_SHORT).show();
+
+            selectedCrewIds.clear(); // Clear selection after training
+            refreshUI();
         });
     }
 
     private void refreshUI() {
-        // refresh anna stats
-        if (anna != null) {
-            annaLoc.setText("location:" + anna.getLocation().toString().toLowerCase());
-            annaExp.setText(" exp: " + anna.getExperience());
-            annaEnergy.setText(" energy: " + anna.getEnergy() + "%");
+        characterGrid.removeAllViews();
+
+        // loop through every single crew member in the ColonyManager
+        for (CrewMember crew : manager) {
+            View cardView = getLayoutInflater().inflate(R.layout.crew_card, characterGrid, false);
+
+            TextView nameRole = cardView.findViewById(R.id.card_name_role);
+            TextView locText = cardView.findViewById(R.id.card_loc);
+            TextView expText = cardView.findViewById(R.id.card_exp);
+            TextView energyText = cardView.findViewById(R.id.card_energy);
+
+            nameRole.setText(crew.getName() + "\n" + crew.getType());
+            locText.setText(" Loc: " + crew.getLocation().toString().toLowerCase());
+            expText.setText(" Exp: " + crew.getExperience());
+            energyText.setText(" Energy: " + crew.getEnergy() + "%");
+
+            //GOD DAMN SELECTION LOGIC
+            android.graphics.drawable.GradientDrawable gd = new android.graphics.drawable.GradientDrawable();
+            gd.setColor(android.graphics.Color.parseColor("#2D1050"));
+            gd.setCornerRadius(8f); //gemini said to ask rounded corners.....
+
+            if (selectedCrewIds.contains(crew.getId())) {
+                gd.setStroke(6, android.graphics.Color.GREEN);
+            } else {
+                gd.setStroke(0, android.graphics.Color.TRANSPARENT);
+            }
+            cardView.setBackground(gd);
+
+            //clilckable cards
+            cardView.setOnClickListener(v -> {
+                if (crew.getLocation() != Location.QUARTERS) {
+                    Toast.makeText(this, crew.getName() + " is currently unavailable.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (selectedCrewIds.contains(crew.getId())) {
+                    // deselection o.o
+                    selectedCrewIds.remove((Integer) crew.getId());
+                } else {
+                    if (selectedCrewIds.size() < 2) {
+                        selectedCrewIds.add(crew.getId());
+                    } else {
+                        Toast.makeText(this, "You can only select up to 2 crew members!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                refreshUI();
+            });
+
+            // greyscale logic if they are training
+            if (crew.getLocation() == Location.SIMULATOR) {
+                locText.setTextColor(android.graphics.Color.GRAY);
+                expText.setTextColor(android.graphics.Color.GRAY);
+                energyText.setTextColor(android.graphics.Color.GRAY);
+                nameRole.setTextColor(android.graphics.Color.GRAY);
+            } else {
+                locText.setTextColor(android.graphics.Color.parseColor("#C084B8"));
+                expText.setTextColor(android.graphics.Color.parseColor("#C084B8"));
+                energyText.setTextColor(android.graphics.Color.parseColor("#C084B8"));
+                nameRole.setTextColor(android.graphics.Color.parseColor("#FFB3DE"));
+            }
+
+            //
+            characterGrid.addView(cardView);
         }
 
-        // refresh jax stats
-        if (jax != null) {
-            jaxLoc.setText("location:" + jax.getLocation().toString().toLowerCase());
-            jaxExp.setText(" exp: " + jax.getExperience());
-            jaxEnergy.setText(" energy: " + jax.getEnergy() + "%");
-        }
-
-        // display current colony currency (if applicable)
+        //current colony currency
         android.content.SharedPreferences prefs = getSharedPreferences("CosmosSaveData", MODE_PRIVATE);
-        int totalIceCreams = prefs.getInt("TOTAL_ICE_CREAMS", 0); // 0 is the default if no save exists
+        int totalIceCreams = prefs.getInt("TOTAL_ICE_CREAMS", 0);
         currencyText.setText(String.valueOf(totalIceCreams));
     }
 

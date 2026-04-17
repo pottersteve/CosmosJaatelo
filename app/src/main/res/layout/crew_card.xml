@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:background="#2D1050"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+        <View android:layout_width="40dp" android:layout_height="40dp" android:background="#3D1A60"/>
+        <TextView
+            android:id="@+id/card_name_role"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Name\nRole"
+            android:textColor="#FFB3DE"
+            android:textSize="13sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <TextView android:id="@+id/card_loc" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:background="#1A0A2E" android:text=" Loc: Unknown" android:textColor="#C084B8" android:textSize="10sp" android:padding="2dp"/>
+    <TextView android:id="@+id/card_exp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:background="#1A0A2E" android:text=" Exp: 0" android:textColor="#C084B8" android:textSize="10sp" android:padding="2dp"/>
+    <TextView android:id="@+id/card_energy" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:background="#1A0A2E" android:text=" Energy: 0%" android:textColor="#C084B8" android:textSize="10sp" android:padding="2dp"/>
+</LinearLayout>

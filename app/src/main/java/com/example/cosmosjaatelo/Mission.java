@@ -21,30 +21,10 @@ import android.widget.TextView;
 
 public class Mission extends AppCompatActivity {
     //variables
-    CrewMember crewA = new CrewMember("") {
-        @Override
-        public int act() {
-            return 0;
-        }
-
-        @Override
-        public String getType() {
-            return "";
-        }
-    };
-    CrewMember crewB = new CrewMember("") {
-        @Override
-        public int act() {
-            return 0;
-        }
-
-        @Override
-        public String getType() {
-            return "";
-        }
-    };
-    String roleA = crewA.getType();
-    String roleB = crewB.getType();
+    CrewMember crewA;
+    CrewMember crewB;
+    String roleA;
+    String roleB;
 
     Threat threat = new Threat();
     Ship ship;
@@ -95,8 +75,20 @@ public class Mission extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.mission);
+
+        //unpack intent
+        int crewAId = getIntent().getIntExtra("CREW_A_ID", -1);
+        int crewBId = getIntent().getIntExtra("CREW_B_ID", -1);
+        //fetch data
+        ColonyManager manager = ColonyManager.getInstance();
+        crewA = manager.getCrewById(crewAId);
+        crewB = manager.getCrewById(crewBId);
+        roleA = crewA.getType();
+        roleB = crewB.getType();
+        energyCrewA = crewA.getEnergy();
+        energyCrewB = crewB.getEnergy();
+        totalHP = 100;
 
         // "constructor"
         this.active = false;
