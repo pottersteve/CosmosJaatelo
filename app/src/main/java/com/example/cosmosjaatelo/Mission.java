@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -337,6 +338,36 @@ public class Mission extends AppCompatActivity {
         }, 2000);
     }
 
+    private void launchGameOverScreen() {
+        Intent intent = new Intent(Mission.this, GameOverActivity.class);
+        intent.putExtra("STATUS", currentStatus.name());
+        intent.putExtra("ICE_CREAMS", iceCreamsPerMission);
+        intent.putExtra("REQUIRED_ICE_CREAMS", weWantThisManyIceCreams);
+
+        int safeHP = Math.max(0, totalHP);
+        int safeEnergyA = Math.max(0, energyCrewA);
+        int safeEnergyB = Math.max(0, energyCrewB);
+
+        intent.putExtra("HP", safeHP);
+        intent.putExtra("ENERGY_A", safeEnergyA);
+        intent.putExtra("ENERGY_B", safeEnergyB);
+        intent.putExtra("TURNS", turnCount);
+
+        // Experience per char
+        int baseExp = (currentStatus == MissionResult.VICTORY) ? 500 : 100; // Shared
+        int hpBonusExp = safeHP;
+
+        // personal bonus: just something for the numbers to make sense
+        int expCrewA = (baseExp + hpBonusExp + safeEnergyA)/10;
+        int expCrewB = (baseExp + hpBonusExp + safeEnergyB)/10;
+
+        intent.putExtra("EXP_CREW_A", expCrewA);
+        intent.putExtra("EXP_CREW_B", expCrewB);
+
+        startActivity(intent);
+        finish();
+    }
+
     void gameOver(){
         this.active = false;
         this.currentStatus = MissionResult.DEFEAT;
@@ -345,6 +376,8 @@ public class Mission extends AppCompatActivity {
         //stop everything
         gameLoopHandler.removeCallbacksAndMessages(null);
         threat.stopSpawning();
+
+        launchGameOverScreen();
     }
 
     void gameWon(){
@@ -355,6 +388,8 @@ public class Mission extends AppCompatActivity {
         //stop everything
         gameLoopHandler.removeCallbacksAndMessages(null);
         threat.stopSpawning();
+
+        launchGameOverScreen();
     }
 
     //methods from uml
