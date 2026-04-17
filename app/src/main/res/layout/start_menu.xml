@@ -9,44 +9,6 @@
     tools:context=".MainActivity">
 
     <!-- top stat buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center"
-        android:layout_marginTop="24dp">
-
-        <Button
-            android:id="@+id/starterMissionsBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Mission Stat"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="#6A0050"
-            android:textColor="#FFB3DE"/>
-
-        <Button
-            android:id="@+id/starterCrewBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Crew Stat"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="#6A0050"
-            android:textColor="#FFB3DE"/>
-
-        <Button
-            android:id="@+id/starterRecordBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="blank for now"
-            android:backgroundTint="#6A0050"
-            android:textColor="#FFB3DE"/>
-
-    </LinearLayout>
 
     <!-- game title -->
     <TextView

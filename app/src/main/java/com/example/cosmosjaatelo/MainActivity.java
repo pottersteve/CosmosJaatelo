@@ -21,9 +21,6 @@ public class MainActivity extends AppCompatActivity {
     private List<Integer> selectedCrewIds = new ArrayList<>();
 
 
-    private CrewMember anna;
-    private CrewMember jax;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // train button: placeholder
+        //not anymore :)
         findViewById(R.id.trainBtn).setOnClickListener(v -> {
             if (selectedCrewIds.size() != 1) {
                 Toast.makeText(this, "Please select exactly 1 crew member to train!", Toast.LENGTH_SHORT).show();
@@ -101,6 +99,11 @@ public class MainActivity extends AppCompatActivity {
 
             selectedCrewIds.clear(); // Clear selection after training
             refreshUI();
+        });
+
+        findViewById(R.id.statsBtn).setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(MainActivity.this, ColonyStats.class);
+            startActivity(intent);
         });
     }
 

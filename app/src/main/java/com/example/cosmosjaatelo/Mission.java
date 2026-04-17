@@ -331,6 +331,23 @@ public class Mission extends AppCompatActivity {
     }
 
     private void launchGameOverScreen() {
+        android.content.SharedPreferences prefs = getSharedPreferences("CosmosSaveData", MODE_PRIVATE);
+        android.content.SharedPreferences.Editor editor = prefs.edit();
+
+        int colonyWins = prefs.getInt("COLONY_WINS", 0);
+        int colonyLosses = prefs.getInt("COLONY_LOSSES", 0);
+
+        if (currentStatus == MissionResult.VICTORY) {
+            crewA.recordWin();
+            crewB.recordWin();
+            editor.putInt("COLONY_WINS", colonyWins + 1);
+        } else {
+            crewA.recordLoss();
+            crewB.recordLoss();
+            editor.putInt("COLONY_LOSSES", colonyLosses + 1);
+        }
+
+        editor.apply();
         Intent intent = new Intent(Mission.this, GameOverActivity.class);
         intent.putExtra("STATUS", currentStatus.name());
         intent.putExtra("ICE_CREAMS", iceCreamsPerMission);

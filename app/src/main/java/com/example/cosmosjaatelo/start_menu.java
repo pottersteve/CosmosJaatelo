@@ -15,22 +15,10 @@ public class start_menu extends AppCompatActivity {
         ColonyManager.getInstance().loadFromFile(this);
 
         Button playBtn     = findViewById(R.id.playBtn);
-        Button missionsBtn = findViewById(R.id.starterMissionsBtn);
-        Button crewBtn     = findViewById(R.id.starterCrewBtn);
-        Button recordBtn   = findViewById(R.id.starterRecordBtn);
 
         //StatsActivity subject to change
         playBtn.setOnClickListener(v ->
                 startActivity(new Intent(this, MainActivity.class)));
-
-        missionsBtn.setOnClickListener(v ->
-                startActivity(new Intent(this, Mission.class)));
-
-        //crewBtn.setOnClickListener(v ->
-        //        startActivity(new Intent(this, StatsActivity.class)));
-
-        //recordBtn.setOnClickListener(v ->
-        //        startActivity(new Intent(this, StatsActivity.class)));
     }
 
     @Override

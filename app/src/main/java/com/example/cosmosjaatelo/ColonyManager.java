@@ -139,6 +139,9 @@ public class ColonyManager implements Iterable<CrewMember> {
                         + c.getLocation().name()        + ","
                         + c.isInMedbay()                + ","
                         + c.getRecoveryTurnsLeft()      + ","
+                        + c.getMissionsPlayed()         + ","
+                        + c.getMissionsWon()            + ","
+                        + c.getMissionsLost()
                         //mission methods etc.
                         + "\n";
                 fos.write(line.getBytes());
@@ -183,6 +186,12 @@ public class ColonyManager implements Iterable<CrewMember> {
                 c.setInMedbay(Boolean.parseBoolean(p[5]));
                 c.setRecoveryTurnsLeft(Integer.parseInt(p[6]));
                 //mission
+
+                if (p.length > 7) {
+                    c.setMissionsPlayed(Integer.parseInt(p[7]));
+                    c.setMissionsWon(Integer.parseInt(p[8]));
+                    c.setMissionsLost(Integer.parseInt(p[9]));
+                }
 
                 crewMap.put(c.getId(), c);
             }
