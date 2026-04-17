@@ -108,18 +108,24 @@ public class Mission extends AppCompatActivity {
         //special abilities
 
         //if medic
-        Button healButton = findViewById(R.id.healButton);
-        healButton.setOnClickListener(v -> {
-            heal();
-        });
-        //if engineer
-        Button repairButton = findViewById(R.id.repairButton);
-        repairButton.setOnClickListener(v ->{
-            repairShip();
-        });
-        //if pilot
-        ship.speed += 50;
+        if(roleA.equals("Medic") || roleB.equals("Medic")){
+            Button healButton = findViewById(R.id.healButton);
+            healButton.setOnClickListener(v -> {
+                heal();
+            });
+        }
 
+        //if engineer
+        if(roleA.equals("Engineer") || roleB.equals("Engineer")) {
+            Button repairButton = findViewById(R.id.repairButton);
+            repairButton.setOnClickListener(v -> {
+                repairShip();
+            });
+        }
+        //if pilot
+        if(roleA.equals("Pilot") || roleB.equals("Pilot")) {
+            ship.speed += 50;
+        }
 
 
     }
@@ -369,6 +375,9 @@ public class Mission extends AppCompatActivity {
         // personal bonus: just something for the numbers to make sense
         int expCrewA = (baseExp + hpBonusExp + safeEnergyA)/10;
         int expCrewB = (baseExp + hpBonusExp + safeEnergyB)/10;
+        crewA.setExperience(crewA.getExperience() + expCrewA);
+        crewB.setExperience(crewB.getExperience() + expCrewB);
+        ColonyManager.getInstance().saveToFile(this);
 
         intent.putExtra("EXP_CREW_A", expCrewA);
         intent.putExtra("EXP_CREW_B", expCrewB);
