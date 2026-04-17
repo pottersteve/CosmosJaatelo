@@ -51,7 +51,7 @@ public class Mission extends AppCompatActivity {
     List<String> missionLog = new ArrayList<>();
     Boolean active;
     int turnCount;
-    int weWantThisManyIceCreams;
+    int weWantThisManyIceCreams; int totalIceCreams = 0;
 
     //int totalHP = crewA.getEnergy()+ crewB.getEnergy();
     int totalHP = 100; //debugging purposes
@@ -320,7 +320,7 @@ public class Mission extends AppCompatActivity {
         }, 2000);
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n")//no idea what this is but i dont want to touch
     void repairShip(){
         if(iceCreamsPerMission > 5){
             iceCreamsPerMission -= 5;
@@ -381,6 +381,7 @@ public class Mission extends AppCompatActivity {
     }
 
     void gameWon(){
+        totalIceCreams += weWantThisManyIceCreams;
         this.active = false;
         this.currentStatus = MissionResult.VICTORY;
         this.missionLog.add("Got the amount needed!! Mission successful!");

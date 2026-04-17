@@ -100,7 +100,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // display current colony currency (if applicable)
-        currencyText.setText("🍦 500");
+        android.content.SharedPreferences prefs = getSharedPreferences("CosmosSaveData", MODE_PRIVATE);
+        int totalIceCreams = prefs.getInt("TOTAL_ICE_CREAMS", 0); // 0 is the default if no save exists
+        currencyText.setText(String.valueOf(totalIceCreams));
     }
 
     @Override

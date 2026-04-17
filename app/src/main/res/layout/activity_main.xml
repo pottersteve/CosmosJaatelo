@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -16,7 +17,22 @@
         <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1"/>
         <Button android:id="@+id/statsBtn" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Stats" android:textColor="#FFB3DE" android:backgroundTint="#6A0050" android:textSize="11sp" android:layout_marginEnd="4dp"/>
         <Button android:id="@+id/upgradeBtn" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Upgrade" android:textColor="#FFB3DE" android:backgroundTint="#6A0050" android:textSize="11sp" android:layout_marginEnd="8dp"/>
-        <TextView android:id="@+id/currencyText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🍦 500" android:textColor="#FFB3DE" android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            app:srcCompat="@drawable/icecream" />
+
+        <TextView
+            android:id="@+id/currencyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TextView" />
     </LinearLayout>
 
     <ScrollView

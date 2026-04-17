@@ -38,6 +38,11 @@ public class GameOverActivity extends AppCompatActivity {
         int expCrewA;
         int expCrewB;
 
+        //save stuff i assume
+        android.content.SharedPreferences prefs = getSharedPreferences("CosmosSaveData", MODE_PRIVATE);
+        int currentBank = prefs.getInt("TOTAL_ICE_CREAMS", 0);
+        prefs.edit().putInt("TOTAL_ICE_CREAMS", currentBank + iceCreams).apply();
+
         // calculated stats per character
         if("VICTORY".equals(status)){
             expCrewA = intent.getIntExtra("EXP_CREW_A", 0);
