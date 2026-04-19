@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#1A0A2E"
+    android:gravity="center_horizontal"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/gameOverTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MISSION OVER"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:textColor="#FFB3DE"
+        android:layout_marginTop="40dp"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Final Report"
+        android:textSize="18sp"
+        android:textColor="#C084B8"
+        android:layout_marginTop="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#2D1050"
+        android:padding="24dp"
+        android:layout_marginTop="32dp">
+
+        <TextView
+            android:id="@+id/statStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Status: DEFEAT"
+            android:textColor="#FFB3DE"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/statExpA"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Crew A XP: +0"
+            android:textColor="#FFB3DE"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/statExpB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Crew B XP: +0"
+            android:textColor="#FFB3DE"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/statIceCreams"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ice Creams Gathered: 0"
+            android:textColor="#FFB3DE"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/statHP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Remaining HP: 0"
+            android:textColor="#FFB3DE"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/statEnergyA"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Crew A Energy: 0"
+            android:textColor="#FFB3DE"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/statEnergyB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Crew B Energy: 0"
+            android:textColor="#FFB3DE"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/statTurns"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Turns Elapsed: 0"
+            android:textColor="#FFB3DE"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="24dp">
+
+        <Button
+            android:id="@+id/btnViewStats"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="ALL STATS"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFB3DE"
+            android:backgroundTint="#6A0050"/>
+
+        <Button
+            android:id="@+id/btnMainMenu"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="MAIN MENU"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#1A0A2E"
+            android:backgroundTint="#FFB3DE"/>
+
+    </LinearLayout>
+
+</LinearLayout>

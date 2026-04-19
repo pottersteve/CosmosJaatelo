@@ -12,6 +12,10 @@ public abstract class CrewMember {
     private boolean inMedbay;
     private int recoveryTurnsLeft;
 
+    private int missionsPlayed = 0;
+    private int missionsWon = 0;
+    private int missionsLost = 0;
+
     // protected — subclasses set these in their own constructors
     protected int maxEnergy;
     protected int baseSkill;
@@ -77,6 +81,17 @@ public abstract class CrewMember {
         this.recoveryTurnsLeft = 0;
         this.location = Location.QUARTERS;
     }
+
+    public void recordWin() {
+        this.missionsPlayed++;
+        this.missionsWon++;
+    }
+
+    public void recordLoss() {
+        this.missionsPlayed++;
+        this.missionsLost++;
+    }
+
     // typical getters
     //thank you, vania!!!!
 
@@ -90,6 +105,11 @@ public abstract class CrewMember {
     public Location getLocation()       { return location; }
     public boolean isInMedbay()         { return inMedbay; }
     public int getRecoveryTurnsLeft()   { return recoveryTurnsLeft; }
+    public int getMissionsPlayed() { return missionsPlayed; }
+    public int getMissionsWon() { return missionsWon; }
+    public int getMissionsLost() { return missionsLost; }
+
+
     //stat
 
     public abstract String getType();
@@ -100,4 +120,8 @@ public abstract class CrewMember {
     public void setLocation(Location location)          { this.location = location; }
     public void setInMedbay(boolean inMedbay)           { this.inMedbay = inMedbay; }
     public void setRecoveryTurnsLeft(int turns)         { this.recoveryTurnsLeft = turns; }
+
+    public void setMissionsPlayed(int p) { this.missionsPlayed = p; }
+    public void setMissionsWon(int w) { this.missionsWon = w; }
+    public void setMissionsLost(int l) { this.missionsLost = l; }
 }

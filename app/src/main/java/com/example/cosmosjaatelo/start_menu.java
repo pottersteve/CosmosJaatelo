@@ -14,8 +14,9 @@ public class start_menu extends AppCompatActivity {
 
         ColonyManager.getInstance().loadFromFile(this);
 
-        Button playBtn = findViewById(R.id.playBtn);
+        Button playBtn     = findViewById(R.id.playBtn);
 
+        //StatsActivity subject to change
         playBtn.setOnClickListener(v ->
                 startActivity(new Intent(this, MainActivity.class)));
     }

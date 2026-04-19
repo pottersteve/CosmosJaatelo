@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -20,37 +21,17 @@ import android.widget.TextView;
 
 public class Mission extends AppCompatActivity {
     //variables
-    CrewMember crewA = new CrewMember("") {
-        @Override
-        public int act() {
-            return 0;
-        }
-
-        @Override
-        public String getType() {
-            return "";
-        }
-    };
-    CrewMember crewB = new CrewMember("") {
-        @Override
-        public int act() {
-            return 0;
-        }
-
-        @Override
-        public String getType() {
-            return "";
-        }
-    };
-    String roleA = crewA.getType();
-    String roleB = crewB.getType();
+    CrewMember crewA;
+    CrewMember crewB;
+    String roleA;
+    String roleB;
 
     Threat threat = new Threat();
     Ship ship;
     List<String> missionLog = new ArrayList<>();
     Boolean active;
     int turnCount;
-    int weWantThisManyIceCreams;
+    int weWantThisManyIceCreams; int totalIceCreams = 0;
 
     //int totalHP = crewA.getEnergy()+ crewB.getEnergy();
     int totalHP = 100; //debugging purposes
@@ -94,8 +75,20 @@ public class Mission extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.mission);
+
+        //unpack intent
+        int crewAId = getIntent().getIntExtra("CREW_A_ID", -1);
+        int crewBId = getIntent().getIntExtra("CREW_B_ID", -1);
+        //fetch data
+        ColonyManager manager = ColonyManager.getInstance();
+        crewA = manager.getCrewById(crewAId);
+        crewB = manager.getCrewById(crewBId);
+        roleA = crewA.getType();
+        roleB = crewB.getType();
+        energyCrewA = crewA.getEnergy();
+        energyCrewB = crewB.getEnergy();
+        totalHP = 100;
 
         // "constructor"
         this.active = false;
@@ -319,7 +312,7 @@ public class Mission extends AppCompatActivity {
         }, 2000);
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n")//no idea what this is but i dont want to touch
     void repairShip(){
         if(iceCreamsPerMission > 5){
             iceCreamsPerMission -= 5;
@@ -337,6 +330,53 @@ public class Mission extends AppCompatActivity {
         }, 2000);
     }
 
+    private void launchGameOverScreen() {
+        android.content.SharedPreferences prefs = getSharedPreferences("CosmosSaveData", MODE_PRIVATE);
+        android.content.SharedPreferences.Editor editor = prefs.edit();
+
+        int colonyWins = prefs.getInt("COLONY_WINS", 0);
+        int colonyLosses = prefs.getInt("COLONY_LOSSES", 0);
+
+        if (currentStatus == MissionResult.VICTORY) {
+            crewA.recordWin();
+            crewB.recordWin();
+            editor.putInt("COLONY_WINS", colonyWins + 1);
+        } else {
+            crewA.recordLoss();
+            crewB.recordLoss();
+            editor.putInt("COLONY_LOSSES", colonyLosses + 1);
+        }
+
+        editor.apply();
+        Intent intent = new Intent(Mission.this, GameOverActivity.class);
+        intent.putExtra("STATUS", currentStatus.name());
+        intent.putExtra("ICE_CREAMS", iceCreamsPerMission);
+        intent.putExtra("REQUIRED_ICE_CREAMS", weWantThisManyIceCreams);
+
+        int safeHP = Math.max(0, totalHP);
+        int safeEnergyA = Math.max(0, energyCrewA);
+        int safeEnergyB = Math.max(0, energyCrewB);
+
+        intent.putExtra("HP", safeHP);
+        intent.putExtra("ENERGY_A", safeEnergyA);
+        intent.putExtra("ENERGY_B", safeEnergyB);
+        intent.putExtra("TURNS", turnCount);
+
+        // Experience per char
+        int baseExp = (currentStatus == MissionResult.VICTORY) ? 500 : 100; // Shared
+        int hpBonusExp = safeHP;
+
+        // personal bonus: just something for the numbers to make sense
+        int expCrewA = (baseExp + hpBonusExp + safeEnergyA)/10;
+        int expCrewB = (baseExp + hpBonusExp + safeEnergyB)/10;
+
+        intent.putExtra("EXP_CREW_A", expCrewA);
+        intent.putExtra("EXP_CREW_B", expCrewB);
+
+        startActivity(intent);
+        finish();
+    }
+
     void gameOver(){
         this.active = false;
         this.currentStatus = MissionResult.DEFEAT;
@@ -345,9 +385,12 @@ public class Mission extends AppCompatActivity {
         //stop everything
         gameLoopHandler.removeCallbacksAndMessages(null);
         threat.stopSpawning();
+
+        launchGameOverScreen();
     }
 
     void gameWon(){
+        totalIceCreams += weWantThisManyIceCreams;
         this.active = false;
         this.currentStatus = MissionResult.VICTORY;
         this.missionLog.add("Got the amount needed!! Mission successful!");
@@ -355,6 +398,8 @@ public class Mission extends AppCompatActivity {
         //stop everything
         gameLoopHandler.removeCallbacksAndMessages(null);
         threat.stopSpawning();
+
+        launchGameOverScreen();
     }
 
     //methods from uml
