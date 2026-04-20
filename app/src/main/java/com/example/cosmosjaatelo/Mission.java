@@ -102,21 +102,28 @@ public class Mission extends AppCompatActivity {
         });
 
         //special abilities
-
+        Button healButton = findViewById(R.id.healButton);
+        Button repairButton = findViewById(R.id.repairButton);
         //if medic
-        if(roleA.equals("Medic") || roleB.equals("Medic")){
-            Button healButton = findViewById(R.id.healButton);
+        if(roleA.equals("Medic") || roleB.equals("Medic")){ //bless javascript
+
             healButton.setOnClickListener(v -> {
                 heal();
             });
         }
+        else{
+            healButton.setVisibility(android.view.View.GONE);
+        }
 
         //if engineer
         if(roleA.equals("Engineer") || roleB.equals("Engineer")) {
-            Button repairButton = findViewById(R.id.repairButton);
+
             repairButton.setOnClickListener(v -> {
                 repairShip();
             });
+        }
+        else{
+            repairButton.setVisibility(android.view.View.GONE);
         }
         //if pilot
         if(roleA.equals("Pilot") || roleB.equals("Pilot")) {

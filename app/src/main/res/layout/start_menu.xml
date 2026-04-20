@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
@@ -28,24 +29,22 @@
         android:textColor="#C084B8"
         android:layout_marginTop="8dp"/>
 
-    <!-- logo placeholder -->
+    <!-- pushes play button to bottom -->
     <FrameLayout
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
         android:layout_marginTop="48dp"
         android:background="#2D1050">
 
-        <TextView
+        <ImageView
+            android:id="@+id/imageView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="[ LOGO ]"
-            android:textColor="#6A3080"
-            android:textSize="18sp"/>
+            app:srcCompat="@drawable/logomaybe" />
 
     </FrameLayout>
 
-    <!-- pushes play button to bottom -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             int idToTrain = selectedCrewIds.get(0);
+            CrewMember trainee = manager.getCrewById(idToTrain);
             manager.moveCrew(idToTrain, Location.SIMULATOR);
             manager.trainCrew(idToTrain);
 
@@ -101,6 +102,17 @@ public class MainActivity extends AppCompatActivity {
 
             selectedCrewIds.clear(); // Clear selection after training
             refreshUI();
+
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                if (!isFinishing() && !isDestroyed()) {
+                    manager.moveCrew(idToTrain, Location.QUARTERS);
+                    trainee.setExperience(trainee.getExperience() + 1);
+
+                    Toast.makeText(this, "Finished training!", Toast.LENGTH_LONG).show();
+
+                    refreshUI();
+                }
+            }, 120000);
         });
 
         findViewById(R.id.statsBtn).setOnClickListener(v -> {

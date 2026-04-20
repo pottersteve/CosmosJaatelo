@@ -6,7 +6,7 @@ public abstract class CrewMember {
     private int id;
     private String name;
     private int energy;
-    private int experience;
+    private float experience;
 
     private Location location;
     private boolean inMedbay;
@@ -47,7 +47,7 @@ public abstract class CrewMember {
         this.energy = Math.max(0, this.energy - actualDamage);
     }
 
-    public int getEffectiveSkill() {
+    public float getEffectiveSkill() {
         // XP adds directly to skill — per spec
         return baseSkill + experience;
     }
@@ -55,7 +55,7 @@ public abstract class CrewMember {
     public void train() {
 
         if (this.energy > 0) {
-            this.experience++;
+            this.experience += 0.5;
             this.energy--;
         }
     }
@@ -97,7 +97,7 @@ public abstract class CrewMember {
     public int getId()                  { return id; }
     public String getName()             { return name; }
     public int getEnergy()              { return energy; }
-    public int getExperience()          { return experience; }
+    public float getExperience()          { return experience; }
     public Location getLocation()       { return location; }
     public boolean isInMedbay()         { return inMedbay; }
     public int getRecoveryTurnsLeft()   { return recoveryTurnsLeft; }
@@ -112,7 +112,7 @@ public abstract class CrewMember {
 
 
     public void setId(int id)                           { this.id = id; }
-    public void setExperience(int experience)           { this.experience = experience; }
+    public void setExperience(float experience)           { this.experience = experience; }
     public void setLocation(Location location)          { this.location = location; }
     public void setInMedbay(boolean inMedbay)           { this.inMedbay = inMedbay; }
     public void setRecoveryTurnsLeft(int turns)         { this.recoveryTurnsLeft = turns; }
