@@ -101,8 +101,7 @@ public class ColonyManager implements Iterable<CrewMember> {
 
 
 
-    public void tickMedbay() {
-        //  looping only over MEDBAY crew
+    public void tickMedbay() {//  looping only over MEDBAY crew
         Iterator<CrewMember> it = iteratorAt(Location.MEDBAY);
         while (it.hasNext()) {
             CrewMember c = it.next();
@@ -177,7 +176,8 @@ public class ColonyManager implements Iterable<CrewMember> {
 
                 // p[0]=id, p[1]=name, p[2]=type, p[3]=xp,
                 // p[4]=location, p[5]=inMedbay, p[6]=recoveryTurns
-                // p[7]=missionsCompleted, p[8]=victories, p[9]=training
+                //
+                // p[7]=missionsPlayed, p[8]=missionsWon, p[9]=missionsLost
 
                 CrewMember c = createByType(p[1], p[2]);
                 c.setId(Integer.parseInt(p[0]));

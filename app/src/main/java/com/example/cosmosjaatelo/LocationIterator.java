@@ -18,7 +18,7 @@ public class LocationIterator implements Iterator<CrewMember> {
             }
         }
     }
-//hasNext and next for the iterator
+// hasNext and next for the iterator
     @Override
     public boolean hasNext() {
         return index < filtered.size();
