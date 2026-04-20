@@ -93,15 +93,11 @@ public abstract class CrewMember {
     }
 
     // typical getters
-    //thank you, vania!!!!
 
     public int getId()                  { return id; }
     public String getName()             { return name; }
     public int getEnergy()              { return energy; }
-    public int getMaxEnergy()           { return maxEnergy; }
     public int getExperience()          { return experience; }
-    public int getBaseSkill()           { return baseSkill; }
-    public int getResilience()          { return resilience; }
     public Location getLocation()       { return location; }
     public boolean isInMedbay()         { return inMedbay; }
     public int getRecoveryTurnsLeft()   { return recoveryTurnsLeft; }

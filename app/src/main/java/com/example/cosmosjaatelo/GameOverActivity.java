@@ -38,7 +38,7 @@ public class GameOverActivity extends AppCompatActivity {
         int expCrewA;
         int expCrewB;
 
-        //save stuff i assume
+        //save stuff
         android.content.SharedPreferences prefs = getSharedPreferences("CosmosSaveData", MODE_PRIVATE);
         int currentBank = prefs.getInt("TOTAL_ICE_CREAMS", 0);
         prefs.edit().putInt("TOTAL_ICE_CREAMS", currentBank + iceCreams).apply();

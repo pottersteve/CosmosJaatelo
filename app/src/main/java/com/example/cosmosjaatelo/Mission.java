@@ -59,15 +59,11 @@ public class Mission extends AppCompatActivity {
     Rect shipRect = new Rect();
 
 
-    enum MissionResult{
-        VICTORY,
-        DEFEAT,
-        IN_PROGRESS
-    }
+
 
     enum Action{
         ATTACK,
-        DEFEAND,
+        DEFEND,
         SPECIAL
     }
 
@@ -90,7 +86,7 @@ public class Mission extends AppCompatActivity {
         energyCrewB = crewB.getEnergy();
         totalHP = 100;
 
-        // "constructor"
+        // constructor
         this.active = false;
         this.turnCount = 0;
         this.iceCreamsPerMission = 0;
@@ -102,7 +98,7 @@ public class Mission extends AppCompatActivity {
 
         Button shootButton = findViewById(R.id.shootButton);
         shootButton.setOnClickListener(v -> {
-            ship.shoot(threat.activeMeteors); //bless javascript
+            ship.shoot(threat.activeMeteors);
         });
 
         //special abilities
@@ -165,7 +161,7 @@ public class Mission extends AppCompatActivity {
         }
     }
 
-    //collisions i am crying
+
     void startCollisionChecker(){
         Runnable collisionRunnable = new Runnable() {
             @Override
@@ -273,7 +269,7 @@ public class Mission extends AppCompatActivity {
                     energyCrewB = (int) exactEnergyB;
 
                     if(energyCrewA<=0 || energyCrewB<=0){
-                        gameOver(); //and that specific crew member goes to medbay
+                        gameOver(); //for that specific crew member to be transfered to medbay
                     }
 
                     energyCrewATextView.setText("Energy a: " + energyCrewA);
@@ -312,7 +308,7 @@ public class Mission extends AppCompatActivity {
         }, 2000);
     }
 
-    @SuppressLint("SetTextI18n")//no idea what this is but i dont want to touch
+    @SuppressLint("SetTextI18n")
     void repairShip(){
         if(iceCreamsPerMission > 5){
             iceCreamsPerMission -= 5;
@@ -366,7 +362,7 @@ public class Mission extends AppCompatActivity {
         int baseExp = (currentStatus == MissionResult.VICTORY) ? 500 : 100; // Shared
         int hpBonusExp = safeHP;
 
-        // personal bonus: just something for the numbers to make sense
+        // personal bonus: just math so that the numbers to make sense
         int expCrewA = (baseExp + hpBonusExp + safeEnergyA)/10;
         int expCrewB = (baseExp + hpBonusExp + safeEnergyB)/10;
 
